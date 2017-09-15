@@ -41,3 +41,5 @@ Thumbs.db
 #Some Random Extension - renamed zip files
 ################################
 *.sre
+
+/vendor/

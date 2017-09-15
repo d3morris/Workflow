@@ -1,0 +1,16 @@
+{
+    "name": "duane/workflow",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Duane Morris",
+            "email": "duanem027@gmail.com"
+        }
+    ],
+    "require": {
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    }
+}
