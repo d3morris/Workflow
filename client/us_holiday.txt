@@ -1,0 +1,17 @@
+Day	Date	Year	Holiday				Comments
+Sunday	Jan 01	2017	New Years Day
+Monday	Jan 02	2017	New Years Day Observed
+Monday	Jan 16	2017	Martin Luther King Jr Day	3rd Monday in January
+Monday	Feb 20	2017	Presidents Day			3rd Monday in February. Not all states
+Monday	Apr 17	2017	Emancipation Day		Washington DC only. weekend closest to apr 16
+Sunday	May 14	2017	Mothers Day			2nd Sunday in May
+Monday	May 29	2017	Memorial Day			Last Monday in May
+Sunday	Jun 18	2017	Fathers Day			3rd Sunday in June
+Tuesday	Jul 04	2017	Independence Day
+Monday	Sep 04	2017	Labor Day			1st Monday in Sept
+Monday	Oct 09	2017	Columbus Day			2nd Monday in October
+Friday	Nov 10	2017	Veterans Day (observed)
+Thurs	Nov 23	2017	Thanksgiving			4th Thursday in November
+Friday	Nov 24	2017	Day after thanksgiving
+
+Monday	Dec 25	2017	Christmas Day

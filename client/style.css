@@ -1,0 +1,73 @@
+/* Main structural elements*/
+/**/
+body {
+    color: #000 inherit;
+    font-: sans-serif;
+    font-size: 11pt;
+}
+
+header {
+    background-color: rgba(34,34,34,0.5);
+    width: 100%;
+    height: 10%;
+}
+
+nav {
+    background-color: rgba(68,68,68,0.3);
+    width: 30%;
+    float:left;
+}
+
+main {
+    background-color: rgba(119,119,119,0.1);
+    width: 70%;
+    float:right;
+}
+
+footer {}
+
+/* elements contained in header */
+.pgTitle {
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #0011ff;
+}
+
+.pgCrumbs {
+    font-size: 8px;
+    font-weight: lighter;
+    background-color: #000000;
+}
+
+  /*nav elements*/
+.nav_header {}
+#nav_item {}
+
+/*Main body elements*/
+.main_header {}
+
+.main_display_yr {}
+
+.main_display_mo {}
+
+.main_display_wk {}
+
+.main_display_dy {}
+
+.main_display_cal {}
+
+#box_year {}
+
+#box_month {}
+
+#box_day {}
+
+#box_weekday {}
+
+#box_weekend {}
+
+#box_stathol {}
+
+#box_vac {}
+
+#box_empty {}
