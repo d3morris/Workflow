@@ -5,7 +5,7 @@
  *
  * Functions for handling HTML pages
  *
- * 
+ *
  *
 */
 
@@ -29,23 +29,24 @@ class libHTML {
 		//sanitize url.. just to be certain
 		$sRtn='';
 		$pCheck=False;
-		$pVal1='';
-		$pVal2='';
-		$pVal3='';
-		$pType='';
+		$pYear='';
+		$pMonth='';
+		$pWeek='';
+		$pDay='';
 		$yr = 0;
 		$sURI=strtolower($_SERVER['REQUEST_URI']);
 		$reset = 'http://'.$_SERVER['HTTP_HOST'].'/wrkflow/view.php';
 
-		preg_match("/([a-z]{1,})\.php\?(20[0-9]{2})\/([0-9]{2,4})\/([0-9]{2})/", $sURI, $pMatches);
+		preg_match("/([a-z]{1,})\.php\?(20[1-5][0-9])\/([0-9]{2,4})\/([0-9]{1,2})/", $sURI, $pMatches);
 
 		for($i=0;$i<count($pMatches); $i++){
+			$currentMatch = $pMatches[$i];
 			switch ($i) {
 				case 0:
 					$pCheck=False;
 					break;
 				case 1:	//page name check
-					if ($pMatches == "view") {
+					if ($currentMatch == "view") {
 						$pCheck=True;
 					} else {
 						$this->setURIRedirect($reset);
@@ -54,10 +55,9 @@ class libHTML {
 					break;
 				case 2:	//year format, check for leap year
 					if ($pCheck) {
-						$yr = intval([$pMatches[2]]);
+						$yr = intval($currentMatch);
 						if (($yr>2015) && ($yr<2050)) {
-							$pVal1=$pMatches[2];
-							$pType='yr';
+							$pYear=$currentMatch;
 							if ((($yr%4==0) && ($yr%100!=0)) || (($yr%4==0) && ($yr%400==0))){
 								$this->dofm[1] =29;
 							}
@@ -66,28 +66,25 @@ class libHTML {
 					break;
 				case 3: //month[0-9]{2}/week[0][0-9]{2}/day[0][0-9]{3} format
 					if($pCheck){
-						$x=intval($pMatches[3]);
-						switch (strlen($pMatches[3])) {
+						$x=intval($currentMatch);
+						switch (strlen($currentMatch)) {
 							case 2:
 								if(($x>=1) && ($x<=12)){
-									$pVal2 = x;
-									$pType='mo';
+									$pMonth = x;
 								} else {
 									$this->setURIRedirect($reset);
 								}
 								break;
 							case 3:
 								if(($x>=1) && ($x<=52)) {
-									$pVal2 = x;
-									$pType='wk';
+									$pWeek = x;
 								} else {
 									$this->setURIRedirect($reset);
 								}
 								break;
 							case 4:
 								if(($x>=1) && ($x<=array_sum($this->dofm))) {
-									$pVal2 = x;
-									$pType='dy';
+									$pDay =x;
 								} else {
 									$this->setURIRedirect($reset);
 								}
@@ -96,18 +93,17 @@ class libHTML {
 								$this->setURIRedirect('http://www.google.com');
 								break;
 						}
-					}
+
 					break;
 				case 4:	//day of month ..  [0-9]{2}, iff case 3 is month format
 					if ($pCheck) {
-						if(strlen($pVal2)==2) {
-							if (intval($pMatches[4]) > $this->dofm[intval($pVal2)-1]) {
-								$pMatches[4] = strval($this->dofm[intval($pVal2)-1]);
-								$pVal3 = intval($pMatches[4]);
+						if(strlen($pMonth)==2) {
+							if (intval($currentMatch) > $this->dofm[intval($pVal2)-1]) {
+								$currentMatch = strval($this->dofm[intval($pVal2)-1]);
+								$pDay = intval($currentMatch);
 							} else {
-								$pVal3=intval($pMatches[4]);
+								$pDay = intval($currentMatch);
 							}
-							$pType='dy';
 						} else {
 							$this->setURIRedirect($reset);
 						}
@@ -120,7 +116,7 @@ class libHTML {
 		}
 
 		if ($pCheck) {
-			$this->setCrumbTrail($pVal1,$pVal2,$pVal3);
+			$this->setCrumbTrail($pYear,$pMonth,$pWeek,$pDay);
 			$this->setViewType($pType);
 		} else {
 			$this->setURIRedirect($reset);
