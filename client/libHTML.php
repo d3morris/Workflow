@@ -95,7 +95,12 @@ class libHTML {
 						}
 
 					break;
-				case 4:	//day of month ..  [0-9]{2}, iff case 3 is month format
+				case 4:
+/*
+week or day of month ..  [0-9]{2}, iff case 3 is month format
+Check that there are 5 sunddays for that month for the week format.
+if not 5 sundays, make it 1st wk of next month .. watch end of year ..
+*/
 					if ($pCheck) {
 						if(strlen($pMonth)==2) {
 							if (intval($currentMatch) > $this->dofm[intval($pVal2)-1]) {
