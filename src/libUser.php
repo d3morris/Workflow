@@ -12,13 +12,19 @@ namespace Apps\Lib\Users
 class userInfo {
     private userName='';
     private userAlias='';
-    
+    private userLogin='';
+    private userId='';
+    private userRights='';
+
     public function __construct(){
     }
 
     public function __destruct(){
     }
 
+    public function getUserName(){
+        return($this->$userName);
+    }
 
 }
 ?>
