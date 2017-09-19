@@ -97,7 +97,7 @@ class baseConnect {
  * database.
  *
 */
-    private function connect() {
+    private function connect(NULL) {
       if ($this->$pdoConnection=="") {
         try {
             $dsn = "$dbType:host=$host;dbname=$db;charset=$charset";
@@ -118,7 +118,7 @@ class baseConnect {
  * remove user information and null connection
  * have
 */
-    public function disconnect() {
+    public function disconnect(NULL):boolean {
         $pdoConnection = NULL
     }
 
@@ -134,8 +134,8 @@ class baseConnect {
  * table.  After a successful attempt, the lastLoginDate is updated,
  * the loginAttempts would be reset to 0.
 */
-    public function loginUser($userName,$userPass){
-        $validAttempt = false;
+    public function loginUser(string $userName,string $userPass):boolean {
+        $validAttempt = False;
         $loginUpdate = 'UPDATE users SET lastLoginDate = ?,lockoutLevel = ? WHERE id = ?';
         $loginSql = 'SELECT userId, userAlias FROM users where username = ?, userpass=?';
         try {
@@ -147,7 +147,7 @@ class baseConnect {
 
             $loginUpdate = $pdoConnection->prepare($loginUpdate)->execute([date("Y-m-d H:i:s"),0,$this->$userId]);
 
-            $validAttempt = true;
+            $validAttempt = True;
         }catch(Exception $e) {
             // figure out the exception that occured and then handle it
         }
