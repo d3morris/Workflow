@@ -1,6 +1,7 @@
 {
     "name": "duane/workflow",
     "type": "project",
+    "description":"Test project in php",
     "authors": [
         {
             "name": "Duane Morris",
@@ -9,7 +10,7 @@
     ],
     "autoload":{
             "psr-4":{
-                "Apps\Lib\\":"src/"
+                "Apps\\":"src/"
             }
     },
     "require": {
@@ -17,6 +18,7 @@
 
     "require-dev": {
         "phpunit/phpunit": "6.2.*",
-        "phpunit/dbunit": "3.0.*"
+        "phpunit/dbunit": "3.0.*",
+        "ext-xdebug/ext-xdebug": "*"
     }
 }

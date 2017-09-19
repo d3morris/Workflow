@@ -25,6 +25,9 @@
  *
 */
 
+
+declare(strict_types=1);
+
 namespace Apps\Lib\Database
 
 class baseConnect {
@@ -158,7 +161,7 @@ class baseConnect {
 * Connection class for MySql data sources
 *
 */
-class mySqlConnect extends baseConnect {
+class mySqlConn extends baseConnect {
         public function __construct(){
                 $this->$dbType= "mysql";
         }
@@ -173,7 +176,7 @@ class mySqlConnect extends baseConnect {
 * Connection class for Postgres data sources
 *
 */
-class pgSqlConnect extends baseConnect {
+class pgSqlConn extends baseConnect {
         public function __construct(){
                 $this->$dbType= "pgsql";
         }

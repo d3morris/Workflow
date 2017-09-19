@@ -31,16 +31,22 @@
  * /20[1-3][0-9]/[0][0-3][0-9][0-9] : Day of year
 */
 
-	include 'libHTML.php';
-	include 'libConnect.php';
-	include 'fnTest.php';
+declare(strict_types=1);
+require_once __DIR__.'/vendor/autoload.php';
 
-	$cHTML = new libHTML;
+use Apps\Lib\HTML;
+use Apps\Lib\Database;
+use Apps\Lib\User;
+
+
+$oHTML = new \Apps\Lib\HTML();
+$oUser = new \Apps\Lib\User();
+$oDb = new \Apps\Lib\Database\mySqlConn();
 //	$libFn->parseURI();
 //	$libFn->setCrumbTrail('2017');
-	$cHTML->drawHead();
-	$cHTML->drawBodyHeader();
-	$cHTML->drawBodyNav();
-	$cHTML->drawBodyMain(uriTest());
-	$cHTML->drawEOD();
+$oHTML->drawHead();
+$oHTML->drawBodyHeader();
+$oHTML->drawBodyNav();
+$oHTML->drawBodyMain(uriTest());
+$oHTML->drawEOD();
 ?>

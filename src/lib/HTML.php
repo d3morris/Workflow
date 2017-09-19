@@ -9,125 +9,146 @@
  *
 */
 
+declare(strict_types=1);
+
 namespace Apps\Lib\HTML
 
 class libHTML {
 	private $uname='';
 	private $authDateTime='';
-	public $crumbs = array('','','');
-	private $daysInMonth =  array(31,28,31,30,31,30,31,31,30,31,30,31);
+	public $crumbs=array('','','');
+	private $daysInMonth=array(31,28,31,30,31,30,31,31,30,31,30,31);
 	private $pViewType='';
 
 	/**
-	 * Function to write the html
+	 * Function to determine which calendar information to display and the bread crumbs to set
 	 *
 	 * @param None
-	 * @return None
+	 * @return array containing redirect URL, year,month,week,day values
+	 *
 	 *
 	*/
 	public function parseURI() {
-		//sanitize url.. just to be certain
-		$sRtn='';
 		$pCheck=False;
-		$pYear='';
-		$pMonth='';
-		$pWeek='';
-		$pDay='';
-		$yr = 0;
+		$x=0;
+		$aYMWD=array('',NULL,NULL,NULL,NULL);
 		$sURI=strtolower($_SERVER['REQUEST_URI']);
-		$reset = 'http://'.$_SERVER['HTTP_HOST'].'/wrkflow/view.php';
+		$reset='http://'.$_SERVER['HTTP_HOST'].'/wrkflow/view.php';
 
 		preg_match("/([a-z]{1,})\.php\?(20[1-5][0-9])\/([0-9]{2,4})\/([0-9]{1,2})/", $sURI, $pMatches);
 
-		for($i=0;$i<count($pMatches); $i++){
-			$currentMatch = $pMatches[$i];
+		for($i=0;$i<count($pMatches);$i++){
+			$currentMatch=$pMatches[$i];
 			switch ($i) {
 				case 0:
 					$pCheck=False;
 					break;
 				case 1:	//page name check
-					if ($currentMatch == "view") {
+					if ($currentMatch=="view") {
 						$pCheck=True;
 					} else {
-						$this->setURIRedirect($reset);
+						$pCheck=False;
 					}
-
 					break;
-				case 2:	//year format, check for leap year
+				case 2:
+/**
+ *Check year format.  Only accepting values upto 2050 inclusive.
+ * Check to see if year is a leap year, adjust February day total if it is.
+*/
 					if ($pCheck) {
-						$yr = intval($currentMatch);
+						$yr=intval($currentMatch);
 						if (($yr>2015) && ($yr<2050)) {
-							$pYear=$currentMatch;
+							$aYMWD[1]=$currentMatch;
 							if ((($yr%4==0) && ($yr%100!=0)) || (($yr%4==0) && ($yr%400==0))){
-								$this->dofm[1] =29;
+								$this->dofm[1]=29;
 							}
 						}
 					}
 					break;
 				case 3: //month[0-9]{2}/week[0][0-9]{2}/day[0][0-9]{3} format
+				/**
+				 * Months are 2 digit strings [01-12]
+				 * Weeks are 3 digit [001-052]
+				 * Days are 4 Digits [0001-0366]
+				*/
 					if($pCheck){
 						$x=intval($currentMatch);
 						switch (strlen($currentMatch)) {
 							case 2:
 								if(($x>=1) && ($x<=12)){
-									$pMonth = x;
+									$aYMWD[2]=x;
 								} else {
-									$this->setURIRedirect($reset);
+									$pCheck=False;
 								}
 								break;
 							case 3:
 								if(($x>=1) && ($x<=52)) {
-									$pWeek = x;
+									$aYMWD[3]=x;
 								} else {
-									$this->setURIRedirect($reset);
+									$pCheck=False;
 								}
 								break;
 							case 4:
 								if(($x>=1) && ($x<=array_sum($this->dofm))) {
-									$pDay =x;
+									$aYMWD[4]=x;
 								} else {
-									$this->setURIRedirect($reset);
+									$pCheck=False;
 								}
 								break;
 							default:
-								$this->setURIRedirect('http://www.google.com');
+							// Nothing like we expected. Log and move on
+							// need a log thingie
+								$pCheck=False;
 								break;
 						}
-
 					break;
 				case 4:
-/*
-week or day of month ..  [0-9]{2}, iff case 3 is month format
-Check that there are 5 sunddays for that month for the week format.
-if not 5 sundays, make it 1st wk of next month .. watch end of year ..
+/**
+ * Week or day of month. [0-9]{2}.
+ * Check that a month was found ( aYMWD[2]>2)
+ * Check that there are 5 sundays for that month for the week format.
+ * if not 5 sundays, make it 1st wk of next month .. watch end of year ..
 */
 					if ($pCheck) {
-						if(strlen($pMonth)==2) {
-							if (intval($currentMatch) > $this->dofm[intval($pVal2)-1]) {
-								$currentMatch = strval($this->dofm[intval($pVal2)-1]);
-								$pDay = intval($currentMatch);
-							} else {
-								$pDay = intval($currentMatch);
+						if (($aYMWD[2]>0) & (int($currentMatch)>0 )) {
+							switch (strlen($currentMatch)) {
+								case 1:
+									$aYMWD[3] = int($currentMatch);
+									break;
+								case 2:
+									$aYMWD[4] = int($currentMatch);
+									break;
+								default:
+									$pCheck=False;
+									break;
 							}
 						} else {
-							$this->setURIRedirect($reset);
+							$pCheck=False;
 						}
+					} else {
+						$pCheck=False;
 					}
 					break;
 				default:
-					$this->setURIRedirect('http://www.google.com');
+				// Nothing like we expected. Log and move on
+				// need a log thingie
+					$pCheck=False;
 					break;
+			}
+
+			if (strlen($aYMWD[0])>0) {
+				break;
 			}
 		}
 
-		if ($pCheck) {
-			$this->setCrumbTrail($pYear,$pMonth,$pWeek,$pDay);
-			$this->setViewType($pType);
-		} else {
-			$this->setURIRedirect($reset);
+		if (!$pCheck) {
+			$aYMWD[0]=$reset;
+			$aYMWD[1]=NULL;
+			$aYMWD[2]=NULL;
+			$aYMWD[3]=NULL;
 		}
 
-		return $pType;
+		return $aYMWD;
 	}
 
 	/**
@@ -150,7 +171,7 @@ if not 5 sundays, make it 1st wk of next month .. watch end of year ..
 	 *
 	*/
 	public function drawBodyHeader(){
-		$srvRURI = $_SERVER['REQUEST_URI'];
+		$srvRURI=$_SERVER['REQUEST_URI'];
 		printf('<header>');
 		printf('<div id="pgTitle">Calendar:'. $srvRURI .'</div>');
 		printf('<div id="pgCrumbs">'. $this->getCrumbTrail() .'</div>');
@@ -223,7 +244,7 @@ if not 5 sundays, make it 1st wk of next month .. watch end of year ..
 	 * Function to write the html
 	*/
 	public function setViewType($pView) {
-		$this->$pViewType = $pView;
+		$this->$pViewType=$pView;
 	}
 
 	/**
@@ -231,17 +252,17 @@ if not 5 sundays, make it 1st wk of next month .. watch end of year ..
 	*/
 	public function setCrumbTrail($pgYear='', $pgMonth='',$pgDay=''){
 		if ($pgYear==''){
-			$this->crumbs[0] = '';
-			$this->crumbs[1] = '';
-			$this->crumbs[2] = '';
+			$this->crumbs[0]='';
+			$this->crumbs[1]='';
+			$this->crumbs[2]='';
 		} else {
-			$this->crumbs[0] = $pgYear;
+			$this->crumbs[0]=$pgYear;
 			if ($pgMonth==''){
 				$this->crumbs[1]='';
 				$this->crumbs[2]='';
 			} else {
-				$this->crumbs[1]= $pgYear;
-				$this->crumbs[2]= $pgDay;
+				$this->crumbs[1]=$pgYear;
+				$this->crumbs[2]=$pgDay;
 			}
 		}
 	}
@@ -254,7 +275,7 @@ if not 5 sundays, make it 1st wk of next month .. watch end of year ..
 		if($this->crumbs[0]==''){
 			return 'no crumbs';
 		} else {
-			$sRtn = 'Year-';
+			$sRtn='Year-';
 			if($this->crumbs[1]==''){
 				return $sRtn . 'no other crumbs';
 			} else {
