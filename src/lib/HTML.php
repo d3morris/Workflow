@@ -10,29 +10,25 @@
 */
 
 declare(strict_types=1);
-
 namespace Apps\Lib\HTML
 
 class libHTML {
 	private $uname='';
 	private $authDateTime='';
-	public $crumbs=array('','','');
+	public $aCrumbs=array('',NULL,NULL,NULL,NULL);
 	private $daysInMonth=array(31,28,31,30,31,30,31,31,30,31,30,31);
-	private $pViewType='';
-
 	/**
-	 * Function to determine which calendar information to display and the bread crumbs to set
+	 * Function to that updates the private variables that track the
+	 * information on the view called.
 	 *
-	 * @param None
-	 * @return array containing redirect URL, year,month,week,day values
+	 * @param some string
+	 * @return NULL
 	 *
 	 *
 	*/
-	public function parseURI() {
+	public function parseURI(string $sURI):NULL {
 		$pCheck=False;
 		$x=0;
-		$aYMWD=array('',NULL,NULL,NULL,NULL);
-		$sURI=strtolower($_SERVER['REQUEST_URI']);
 		$reset='http://'.$_SERVER['HTTP_HOST'].'/wrkflow/view.php';
 
 		preg_match("/([a-z]{1,})\.php\?(20[1-5][0-9])\/([0-9]{2,4})\/([0-9]{1,2})/", $sURI, $pMatches);
@@ -58,7 +54,7 @@ class libHTML {
 					if ($pCheck) {
 						$yr=intval($currentMatch);
 						if (($yr>2015) && ($yr<2050)) {
-							$aYMWD[1]=$currentMatch;
+							$this->$aCrumbs[1]=$yr;
 							if ((($yr%4==0) && ($yr%100!=0)) || (($yr%4==0) && ($yr%400==0))){
 								$this->dofm[1]=29;
 							}
@@ -76,21 +72,21 @@ class libHTML {
 						switch (strlen($currentMatch)) {
 							case 2:
 								if(($x>=1) && ($x<=12)){
-									$aYMWD[2]=x;
+									$this->$aCrumbs[2]=$x;
 								} else {
 									$pCheck=False;
 								}
 								break;
 							case 3:
 								if(($x>=1) && ($x<=52)) {
-									$aYMWD[3]=x;
+									$this->$aCrumbs[3]=$x;
 								} else {
 									$pCheck=False;
 								}
 								break;
 							case 4:
 								if(($x>=1) && ($x<=array_sum($this->dofm))) {
-									$aYMWD[4]=x;
+									$this->$aCrumbs[4]=$x;
 								} else {
 									$pCheck=False;
 								}
@@ -110,13 +106,13 @@ class libHTML {
  * if not 5 sundays, make it 1st wk of next month .. watch end of year ..
 */
 					if ($pCheck) {
-						if (($aYMWD[2]>0) & (int($currentMatch)>0 )) {
+						if (($this->$aCrumbs[2]>0) & (int($currentMatch)>0 )) {
 							switch (strlen($currentMatch)) {
 								case 1:
-									$aYMWD[3] = int($currentMatch);
+									$this->$aCrumbs[3] = int($currentMatch);
 									break;
 								case 2:
-									$aYMWD[4] = int($currentMatch);
+									$this->$aCrumbs[4] = int($currentMatch);
 									break;
 								default:
 									$pCheck=False;
@@ -136,29 +132,30 @@ class libHTML {
 					break;
 			}
 
-			if (strlen($aYMWD[0])>0) {
+			if (strlen($this->$aCrumbs[0])>0) {
 				break;
 			}
 		}
 
 		if (!$pCheck) {
-			$aYMWD[0]=$reset;
-			$aYMWD[1]=NULL;
-			$aYMWD[2]=NULL;
-			$aYMWD[3]=NULL;
+			$this->$aCrumbs[0]=$reset;
+			$this->$aCrumbs[1]=NULL;
+			$this->$aCrumbs[2]=NULL;
+			$this->$aCrumbs[3]=NULL;
+			$this->$aCrumbs[4]=NULL;
 		}
 
-		return $aYMWD;
+		return NULL;
 	}
 
 	/**
 	 * Function to write the html
 	 *
-	 * @param None
-	 * @return None
+	 * @param NULL
+	 * @return NULL
 	 *
 	*/
-	public function drawHead() {
+	public function drawHead(NULL):NULL {
 		printf('<html><head><link rel="stylesheet" href="style.css"/>');
 		printf('<title>Calendar tracking</title></head><body>');
 	}
@@ -166,12 +163,11 @@ class libHTML {
 	/**
 	 * Function to write the html
 	 *
-	 * @param None
-	 * @return None
+	 * @param some url
+	 * @return NULL
 	 *
 	*/
-	public function drawBodyHeader(){
-		$srvRURI=$_SERVER['REQUEST_URI'];
+	public function drawBodyHeader(string $srvRURI):NULL{
 		printf('<header>');
 		printf('<div id="pgTitle">Calendar:'. $srvRURI .'</div>');
 		printf('<div id="pgCrumbs">'. $this->getCrumbTrail() .'</div>');
@@ -181,11 +177,11 @@ class libHTML {
 	/**
 	 * Function to write the html
 	 *
-	 * @param None
-	 * @return None
+	 * @param NULL
+	 * @return NULL
 	 *
 	*/
-	public function drawBodyNav(){
+	public function drawBodyNav(NULL):NULL{
 		printf('<nav>');
 		printf('<div id="nav_header">Navigation</div>');
 		printf('<div id="nav_item"><a href="" title="link">Year View</a></div>');
@@ -195,93 +191,64 @@ class libHTML {
 	/**
 	 * Function to write the html
 	 *
-	 * @param None
-	 * @return None
+	 * @param some textdomain
+	 * @return NULL
 	 *
 	*/
-	public function drawBodyMain($argsMain){
+	public function drawBodyMain(string $argsMain, string $sCheck):NULL{
 		printf('<main>');
 		printf('<div id="main_header">Some Title</div>');
 //		printf('<div id="main_display_'.$this->getViewType().'">'.$this->getViewType());
 		printf('<div>');
-		testParseURI();
 		printf('</div>');
 		printf('<p>'.$argsMain.'</p>');
-		printf('<p>http://'.$_SERVER['HTTP_HOST'].'/wrkflow/view.php</p>');
+		printf('<p>http://.$sCheck./wrkflow/view.php</p>');
 		printf('</main>');
 	}
 
 	/**
 	 * Function to write the closing body, and html tags
 	 *
-	 * @param None
-	 * @return None
+	 * @param NULL
+	 * @return NULL
 	 *
 	*/
-	public function writeEOD(){
+	public function writeEOD(NULL):NULL {
 		printf('<script src="app.js"/>');
 		printf('</body></html>');
 	}
 
 	/**
-	 * Function to write the html
+	 * Redirects the browser
 	*/
-	public function setURIRedirect($sURI) {
+	public function setURIRedirect(string $sURI):NULL {
 		ob_start();
 		header('Location: '.$sURI);
 		ob_end_flush();
 		die();
+		return NULL;
 	}
 
 	/**
 	 * Function to write the html
 	*/
-	public function getViewType(){
+	public function getViewType(NULL):string {
 		return ($this->$pViewType);
 	}
 
 	/**
-	 * Function to write the html
+	 * Function to format the stored dates from the url as breadcrumbs
 	*/
-	public function setViewType($pView) {
-		$this->$pViewType=$pView;
-	}
+	public function getCrumbTrail(NULL):string{
+		$sHttpPrefix = '<div class="breadcrumbs"><a href="http://localhost/Sites/Workflow/view.php/";''
+		$sFormattedHTML ='something';
 
-	/**
-	 * Function to write the html
-	*/
-	public function setCrumbTrail($pgYear='', $pgMonth='',$pgDay=''){
-		if ($pgYear==''){
-			$this->crumbs[0]='';
-			$this->crumbs[1]='';
-			$this->crumbs[2]='';
-		} else {
-			$this->crumbs[0]=$pgYear;
-			if ($pgMonth==''){
-				$this->crumbs[1]='';
-				$this->crumbs[2]='';
-			} else {
-				$this->crumbs[1]=$pgYear;
-				$this->crumbs[2]=$pgDay;
+		for($x=1;x<len($this->$aCrumbs);x++){
+			if ($this->$aCrumbs[$x]>0) {
+				$sPrevHttp .= $this->$aCrumbs[$x] .'/';
+				$sFormattedHTML .= $sHttpPrefix.$sPrevHttp.$this->$aCrumbs[$x].'">.$this->$aCrumbs[$x].</a></div>';
 			}
 		}
-	}
-
-	/**
-	 * Function to write the html
-	*/
-	public function getCrumbTrail(){
-		$sRtn ='something';
-		if($this->crumbs[0]==''){
-			return 'no crumbs';
-		} else {
-			$sRtn='Year-';
-			if($this->crumbs[1]==''){
-				return $sRtn . 'no other crumbs';
-			} else {
-				return $sRtn . (strlen($this->crumbs[1])==2?'Month-':'Week-'). ($this->crumbs[2]==''?'no other crumbs':'Day-');
-			}
-		}
-		return $sRtn;
+		return $sFormattedHTML;
 	}
 }

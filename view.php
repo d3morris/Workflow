@@ -39,14 +39,14 @@ use Apps\Lib\Database;
 use Apps\Lib\User;
 
 
-$oHTML = new \Apps\Lib\HTML();
-$oUser = new \Apps\Lib\User();
+$oHTML = new \Apps\Lib\HTML\libHTML();
+$oUser = new \Apps\Lib\User\userInfo();
 $oDb = new \Apps\Lib\Database\mySqlConn();
-//	$libFn->parseURI();
+//	$libFn->parseURI(strtolower($_SERVER['REQUEST_URI']));
 //	$libFn->setCrumbTrail('2017');
 $oHTML->drawHead();
-$oHTML->drawBodyHeader();
+$oHTML->drawBodyHeader($_SERVER['REQUEST_URI'];);
 $oHTML->drawBodyNav();
-$oHTML->drawBodyMain(uriTest());
+$oHTML->drawBodyMain(uriTest(),$_SERVER['HTTP_HOST']);
 $oHTML->drawEOD();
 ?>
