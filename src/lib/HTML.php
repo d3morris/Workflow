@@ -17,6 +17,15 @@ class libHTML {
 	private $authDateTime='';
 	public $aCrumbs=array('',NULL,NULL,NULL,NULL);
 	private $daysInMonth=array(31,28,31,30,31,30,31,31,30,31,30,31);
+
+	function __construct() {
+
+	}
+
+	function __destruct(){
+
+	}
+	
 	/**
 	 * Function to that updates the private variables that track the
 	 * information on the view called.
@@ -33,13 +42,30 @@ class libHTML {
 
 		preg_match("/([a-z]{1,})\.php\?(20[1-5][0-9])\/([0-9]{2,4})\/([0-9]{1,2})/", $sURI, $pMatches);
 
+		/**
+		 *Check year format.  Only accepting values upto 2050 inclusive.
+		 * Check to see if year is a leap year, adjust February day total if it is.
+		*/
+
+		/**
+		 * Months are 2 digit strings [01-12]
+		 * Weeks are 3 digit [001-052]
+		 * Days are 4 Digits [0001-0366]
+		*/
+
+		/**
+		 * Week or day of month. [0-9]{2}.
+		 * Check that a month was found ( aYMWD[2]>2)
+		 * Check that there are 5 sundays for that month for the week format.
+		 * if not 5 sundays, make it 1st wk of next month .. watch end of year ..
+		*/
 		for($i=0;$i<count($pMatches);$i++){
 			$currentMatch=$pMatches[$i];
 			switch ($i) {
 				case 0:
 					$pCheck=False;
 					break;
-				case 1:	//page name check
+				case 1:
 					if ($currentMatch=="view") {
 						$pCheck=True;
 					} else {
@@ -47,13 +73,9 @@ class libHTML {
 					}
 					break;
 				case 2:
-/**
- *Check year format.  Only accepting values upto 2050 inclusive.
- * Check to see if year is a leap year, adjust February day total if it is.
-*/
 					if ($pCheck) {
 						$yr=intval($currentMatch);
-						if (($yr>2015) && ($yr<2050)) {
+						if (($yr>2015) && ($yr<2900)) {
 							$this->$aCrumbs[1]=$yr;
 							if ((($yr%4==0) && ($yr%100!=0)) || (($yr%4==0) && ($yr%400==0))){
 								$this->dofm[1]=29;
@@ -62,11 +84,6 @@ class libHTML {
 					}
 					break;
 				case 3: //month[0-9]{2}/week[0][0-9]{2}/day[0][0-9]{3} format
-				/**
-				 * Months are 2 digit strings [01-12]
-				 * Weeks are 3 digit [001-052]
-				 * Days are 4 Digits [0001-0366]
-				*/
 					if($pCheck){
 						$x=intval($currentMatch);
 						switch (strlen($currentMatch)) {
@@ -92,19 +109,11 @@ class libHTML {
 								}
 								break;
 							default:
-							// Nothing like we expected. Log and move on
-							// need a log thingie
 								$pCheck=False;
 								break;
 						}
 					break;
 				case 4:
-/**
- * Week or day of month. [0-9]{2}.
- * Check that a month was found ( aYMWD[2]>2)
- * Check that there are 5 sundays for that month for the week format.
- * if not 5 sundays, make it 1st wk of next month .. watch end of year ..
-*/
 					if ($pCheck) {
 						if (($this->$aCrumbs[2]>0) & (int($currentMatch)>0 )) {
 							switch (strlen($currentMatch)) {
@@ -126,8 +135,6 @@ class libHTML {
 					}
 					break;
 				default:
-				// Nothing like we expected. Log and move on
-				// need a log thingie
 					$pCheck=False;
 					break;
 			}
@@ -195,10 +202,10 @@ class libHTML {
 	 * @return NULL
 	 *
 	*/
+	//		printf('<div id="main_display_'.$this->getViewType().'">'.$this->getViewType());
 	public function drawBodyMain(string $argsMain, string $sCheck):NULL{
 		printf('<main>');
 		printf('<div id="main_header">Some Title</div>');
-//		printf('<div id="main_display_'.$this->getViewType().'">'.$this->getViewType());
 		printf('<div>');
 		printf('</div>');
 		printf('<p>'.$argsMain.'</p>');
