@@ -25,7 +25,7 @@ class libHTML {
 	function __destruct(){
 
 	}
-	
+
 	/**
 	 * Function to that updates the private variables that track the
 	 * information on the view called.

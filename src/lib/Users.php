@@ -29,4 +29,14 @@ class userInfo {
     }
 
 }
+
+class groupInfo {
+    public function __construct(){
+
+    }
+
+    public function __destruct(){
+
+    }
+}
 ?>
