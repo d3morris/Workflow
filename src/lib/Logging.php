@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Apps\Lib\Logging
 
-class Logging {
-    function __construct(){
+class Logger  {
+
+    function __construct(NULL):null{
 
     }
 
-    function __destruct(){
-        
+    function __destruct(NULL):null{
     }
 }
 ?>

@@ -97,7 +97,7 @@ class baseConnect {
  * database.
  *
 */
-    private function connect(NULL) {
+    private function connect(NULL):NULL {
       if ($this->$pdoConnection=="") {
         try {
             $dsn = "$dbType:host=$host;dbname=$db;charset=$charset";
