@@ -17,6 +17,7 @@ class userInfo {
     private userLogin='';
     private userId='';
     private userRights='';
+    private sessionid=NULL;
 
     public function __construct(){
     }
@@ -39,4 +40,5 @@ class groupInfo {
 
     }
 }
+
 ?>

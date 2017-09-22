@@ -28,7 +28,7 @@
 
 declare(strict_types=1);
 
-namespace Apps\Lib\Database
+namespace Apps\Lib\PDODatabase
 
 class baseConnect {
     private $configFile = "..\workflow.ini";

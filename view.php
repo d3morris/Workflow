@@ -35,13 +35,13 @@ declare(strict_types=1);
 require_once __DIR__.'/vendor/autoload.php';
 
 use Apps\Lib\HTML;
-use Apps\Lib\Database;
+use Apps\Lib\PDODatabase;
 use Apps\Lib\User;
 
 
 $oHTML = new \Apps\Lib\HTML\libHTML();
 $oUser = new \Apps\Lib\User\userInfo();
-$oDb = new \Apps\Lib\Database\mySqlConn();
+$oDb = new \Apps\Lib\PDODatabase\mySqlConn();
 //	$libFn->parseURI(strtolower($_SERVER['REQUEST_URI']));
 //	$libFn->setCrumbTrail('2017');
 $oHTML->drawHead();
